@@ -1,0 +1,13 @@
+[package]
+name        = "lex-pack-tradefinance"
+version     = "0.1.0"
+description = "Trade-finance domain pack — electronic bill of lading (title transfer over lex-pack-custody) + letter-of-credit evidence-gated payment."
+
+[dependencies]
+lex-soft        = { git = "https://github.com/alpibrusl/lex-soft" }
+lex-pack-custody = { git = "https://github.com/alpibrusl/lex-pack-custody" }
+lex-trail       = { git = "https://github.com/alpibrusl/lex-trail" }
+lex-guard       = { git = "https://github.com/alpibrusl/lex-guard" }
+lex-web         = { git = "https://github.com/alpibrusl/lex-web" }
+lex-schema      = { git = "https://github.com/alpibrusl/lex-schema" }
+lex-log         = { git = "https://github.com/alpibrusl/lex-log" }
