@@ -197,7 +197,7 @@ fn missing_docs(required :: List[Str], have :: List[Str]) -> List[Str] {
 # would double-settle), so it must surface as an error, not a silent 201.
 fn mount(r :: router.Router, db :: Db) -> [sql] router.Router {
   let __t := ensure_tables(db)
-  let with_ebl := router.route_effectful(r, "POST", "/tradefinance/ebl", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_ebl := router.route_effectful(r, "POST", "/tradefinance/ebl", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     match jv.parse(c.body) {
       Err(_) => resp.bad_request("{\"error\":\"invalid json\"}"),
       Ok(j) => {
@@ -224,7 +224,7 @@ fn mount(r :: router.Router, db :: Db) -> [sql] router.Router {
       },
     }
   })
-  let with_endorse := router.route_effectful(with_ebl, "POST", "/tradefinance/ebl/:ref/endorse", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_endorse := router.route_effectful(with_ebl, "POST", "/tradefinance/ebl/:ref/endorse", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
@@ -259,7 +259,7 @@ fn mount(r :: router.Router, db :: Db) -> [sql] router.Router {
       },
     }
   })
-  let with_ebl_get := router.route_effectful(with_endorse, "GET", "/tradefinance/ebl/:ref", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_ebl_get := router.route_effectful(with_endorse, "GET", "/tradefinance/ebl/:ref", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
@@ -269,7 +269,7 @@ fn mount(r :: router.Router, db :: Db) -> [sql] router.Router {
       Some(e) => resp.json(jv.stringify(JObj([("ebl_ref", JStr(ref)), ("shipper", JStr(e.shipper)), ("consignee", JStr(e.consignee)), ("carrier", JStr(e.carrier)), ("goods", JStr(e.goods)), ("trailer_ref", JStr(e.trailer_ref)), ("holder", JStr(e.holder)), ("status", JStr(e.status)), ("endorsements", JList(events_for(db, "tradefinance.ebl.", "ebl_ref", ref)))]))),
     }
   })
-  let with_lc := router.route_effectful(with_ebl_get, "POST", "/tradefinance/lc", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_lc := router.route_effectful(with_ebl_get, "POST", "/tradefinance/lc", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     match jv.parse(c.body) {
       Err(_) => resp.bad_request("{\"error\":\"invalid json\"}"),
       Ok(j) => {
@@ -306,7 +306,7 @@ fn mount(r :: router.Router, db :: Db) -> [sql] router.Router {
       },
     }
   })
-  let with_lc_doc := router.route_effectful(with_lc, "POST", "/tradefinance/lc/:ref/documents", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_lc_doc := router.route_effectful(with_lc, "POST", "/tradefinance/lc/:ref/documents", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
@@ -334,7 +334,7 @@ fn mount(r :: router.Router, db :: Db) -> [sql] router.Router {
       },
     }
   })
-  let with_lc_settle := router.route_effectful(with_lc_doc, "POST", "/tradefinance/lc/:ref/settle", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_lc_settle := router.route_effectful(with_lc_doc, "POST", "/tradefinance/lc/:ref/settle", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
@@ -379,7 +379,7 @@ fn mount(r :: router.Router, db :: Db) -> [sql] router.Router {
       },
     }
   })
-  router.route_effectful(with_lc_settle, "GET", "/tradefinance/lc/:ref", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  router.route_effectful(with_lc_settle, "GET", "/tradefinance/lc/:ref", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
